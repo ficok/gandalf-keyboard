@@ -1,0 +1,18 @@
+#!/bin/bash
+
+printf '%s: ' "file name"
+read filename
+printf '\n'
+
+extension="${filename##*.}"
+basename="${filename%.*}"
+
+if [[ ! -e $filename ]]; then
+    print '%s\n' "file $filename doesn't exist!"
+    return 1
+fi
+
+install -m 0444 $filename $basename-RO.$extension
+cp $filename $basename-tinkering-1.$extension
+cp $filename $basename-tinkering-2.$extension
+cp $filename $basename-tinkering-3.$extension

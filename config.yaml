@@ -1,0 +1,275 @@
+meta:
+  engine: 4.1.0
+units:
+  $default_width: u
+  $default_height: u
+  angle: -9
+  pad: 2
+  kx: u
+  ky: u
+  px: kx + pad
+  py: ky + pad
+  mirror_gap: 70
+points:
+  zones:
+    matrix:
+      anchor:
+        shift: [100,-100]
+      rotate: angle
+      mirror: &mirror
+        ref: matrix_inner_bottom
+        distance: mirror_gap
+      key:
+        padding: ky
+        spread: kx
+      columns:
+        pinky:
+          key:
+            column_net: CPN
+        ring:
+          key:
+            column_net: CRN
+            stagger: 5
+        middle:
+          key:
+            column_net: CMI
+            stagger: 3
+        index:
+          key:
+            column_net: CID
+            stagger: -3
+        inner:
+          key:
+            column_net: CIN
+            stagger: -3
+      rows:
+        bottom:
+          row_net: LBO
+          mirror.row_net: RBO
+        home:
+          row_net: LHO
+          mirror.row_net: RHO
+        top:
+          row_net: LTO
+          mirror.row_net: RTO
+        number:
+          row_net: LNU
+          mirror.row_net: RNU
+    mods:
+      mirror: &mirror
+        ref: matrix_inner_bottom
+        distance: mirror_gap
+      anchor:
+        ref: matrix_ring_bottom
+        shift: [-.3kx, -3.2ky]
+      rotate: -angle - 3
+      key:
+        padding: ky
+        spread: 1kx
+      columns:
+        first:
+          rows.upper.column_net: CRN
+          rows.lower.column_net: CLO
+          rows.lower.row_net: LTO
+          rows.lower.mirror.row_net: RTO
+        second:
+          rows.upper.column_net: CMI
+          rows.lower.column_net: CLO
+          rows.lower.row_net: LHO
+          rows.lower.mirror.row_net: RHO
+        third:
+          rows.upper.column_net: CID
+          rows.lower.column_net: CLO
+          rows.lower.row_net: LBO
+          rows.lower.mirror.row_net: RBO
+        fourth:
+          rows.upper.column_net: CIN
+          rows.lower.column_net: CLO
+          rows.lower.row_net: LUP
+          rows.lower.mirror.row_net: RUP
+      rows:
+        lower:
+        upper:
+          row_net: LUP
+          mirror.row_net: RUP
+outlines:
+  _keys:
+    - what: rectangle
+      where: true
+      size: [kx-.5, ky-.5]
+  _board:
+    - what: polygon
+      operation: stack
+      points:
+        - ref: matrix_pinky_number
+          shift: [-.9px, .6px]
+        - ref: matrix_ring_number
+          shift: [-.3px, .8px]
+        - ref: matrix_ring_number
+          shift: [.3px, .8px]
+        - ref: matrix_middle_number
+          shift: [-.4px, .8px]
+        - ref: matrix_middle_number
+          shift: [.4px, .8px]
+        - ref: matrix_index_number
+          shift: [-.3px, .8px]
+        - ref: matrix_index_number
+          shift: [.3px, .8px]
+        - ref: matrix_inner_number
+          shift: [.5px, .8px]
+        - ref: mirror_matrix_inner_number
+          shift: [.5px, .8px]
+        - ref: mirror_matrix_index_number
+          shift: [.3px, .8px]
+        - ref: mirror_matrix_index_number
+          shift: [-.3px, .8px]
+        - ref: mirror_matrix_middle_number
+          shift: [.4px, .8px]
+        - ref: mirror_matrix_middle_number
+          shift: [-.4px, .8px]
+        - ref: mirror_matrix_ring_number
+          shift: [.3px, .8px]
+        - ref: mirror_matrix_ring_number
+          shift: [-.3px, .8px]
+        - ref: mirror_matrix_pinky_number
+          shift: [-.9px, .6px]
+        - ref: mirror_matrix_pinky_bottom
+          shift: [-.9px, -.7px]
+        - ref: mirror_matrix_pinky_bottom
+          shift: [.1px, -.7px]
+        - ref: mirror_mods_first_lower
+          shift: [-px, -px]
+        - ref: mods_first_lower
+          shift: [-px, -px]
+        - ref: matrix_pinky_bottom
+          shift: [.1px, -.7px]
+        - ref: matrix_pinky_bottom
+          shift: [-.9px, -.7px]
+      fillet: 3
+  _combo:
+    - name: _board
+      operation: add
+    - name: _keys
+      operation: subtract
+pcbs:
+  gandalf:
+    template: kicad8
+    outlines:
+      main:
+        outline: _board
+    footprints:
+      choc_hotswap:
+        what: switch_choc_v1_v2
+        where: true
+        params:
+          reversible: false
+          hotswap: true
+          include_keycap: true
+          include_corner_marks: true
+          include_stabilizer_pad: false
+          choc_v1_support: true
+          choc_v2_support: true
+          from: "{{column_net}}"
+          to: "{{colrow}}"
+        adjust:
+          rotate: 180
+      diode:
+        what: diode_tht_sod123
+        where: true
+        params:
+          from: "{{colrow}}"
+          to: "{{row_net}}"
+        adjust:
+          shift: [-8,8]
+          rotate: -90
+          resist: true
+      mcu:
+        what: mcu_nice_nano
+        params:
+          side: 'F'
+          reverse_mount: true
+          P2: SDA
+          P3: SCL
+          P21: CPN
+          P20: CRN
+          P19: CMI
+          P18: LNU
+          P15: LTO
+          P14: LHO
+          P16: LBO
+          P10: LUP
+          P1:  CLO
+          P0:  CID
+          P4:  CIN
+          P5:  RNU
+          P6:  RTO
+          P7:  RHO
+          P8:  RBO
+          P9:  RUP
+        where:
+          ref.aggregate.parts: [matrix_inner_number, mirror_matrix_inner_number]
+          shift: [0,-3]
+          rotate: 0
+      display:
+        what: display_ssd1306
+        params:
+          side: "F"
+          SDA: SDA
+          SCL: SCL
+        where:
+          ref.aggregate.parts: [matrix_inner_home, mirror_matrix_inner_home]
+          shift: [0,-3]
+      reset:
+        what: reset_switch_smd_side
+        where:
+          ref: matrix_inner_number
+          shift: [0,.8px]
+          rotate: -14
+        params:
+          side: 'F'
+      power:
+        what: power_switch_smd_side
+        where:
+          ref: mirror_matrix_inner_number
+          shift: [0, .8px]
+          rotate: 0
+        params:
+          side: 'F'
+      battery:
+        what: battery_connector_jst_ph_2
+        where:
+          ref.aggregate.parts: [matrix_inner_top, mirror_matrix_inner_top]
+          shift: [0,.75px]
+          rotate: 0
+        params:
+          side: 'B'
+      holeTL:
+        what: mounting_hole_plated
+        where:
+          ref: matrix_pinky_number
+          shift: [-14.5,0]
+      holeTR:
+        what: mounting_hole_plated
+        where:
+          ref: mirror_matrix_pinky_number
+          shift: [-14.5,0]
+      holeBL:
+        what: mounting_hole_plated
+        where:
+          ref.aggregate.parts: [matrix_pinky_bottom]
+          shift: [-14.5,0]
+      holeBR:
+        what: mounting_hole_plated
+        where:
+          ref.aggregate.parts: [mirror_matrix_pinky_bottom]
+          shift: [14.5,0]
+      holeCL1:
+        what: mounting_hole_plated
+        where:
+          ref: matrix_inner_bottom
+          shift: [20,-10]
+      holeCR1:
+        what: mounting_hole_plated
+        where:
+          ref: mirror_matrix_inner_bottom
+          shift: [20,-10]

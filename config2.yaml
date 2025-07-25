@@ -1,0 +1,229 @@
+meta:
+  engine: 4.1.0
+units:
+  $default_width: u
+  $default_height: u
+  angle: -13
+  pad: 2
+  kx: u
+  ky: u
+  px: kx + pad
+  py: ky + pad
+  mirror_gap: 70
+points:
+  zones:
+    matrix:
+      anchor:
+        shift: [100,-100]
+      rotate: angle
+      mirror: &mirror
+        ref: matrix_inner_bottom
+        distance: mirror_gap
+      key:
+        padding: ky
+        spread: kx
+      columns:
+        pinky:
+          key:
+            column_net: CPN
+        ring:
+          key:
+            column_net: CRN
+            stagger: 5
+        middle:
+          key:
+            column_net: CMI
+            stagger: 3
+        index:
+          key:
+            column_net: CID
+            stagger: -3
+        inner:
+          key:
+            column_net: CIN
+            stagger: -3
+      rows:
+        bottom:
+          row_net: LBO
+          mirror.row_net: RBO
+        home:
+          row_net: LHO
+          mirror.row_net: RHO
+        top:
+          row_net: LTO
+          mirror.row_net: RTO
+    mods:
+      mirror: &mirror
+        ref: matrix_inner_bottom
+        distance: mirror_gap
+      anchor:
+        ref: matrix_ring_bottom
+        shift: [-.3kx, -2.3ky]
+      rotate: -angle - 7
+      key:
+        padding: ky
+        spread: 1kx
+      columns:
+        first:
+          rows.upper.column_net: CRN
+        second:
+          rows.upper.column_net: CMI
+        third:
+          rows.upper.column_net: CID
+        fourth:
+          rows.upper.column_net: CIN
+      rows:
+        upper:
+          row_net: LUP
+          mirror.row_net: RUP
+outlines:
+  _keys:
+    - what: rectangle
+      where: true
+      size: [kx-.5, ky-.5]
+  _board:
+    - what: polygon
+      operation: stack
+      points:
+        - ref: matrix_pinky_top
+          shift: [-.9px, .6px]
+        - ref: matrix_ring_top
+          shift: [-.3px, .8px]
+        - ref: matrix_ring_top
+          shift: [.3px, .8px]
+        - ref: matrix_middle_top
+          shift: [-.4px, .8px]
+        - ref: matrix_middle_top
+          shift: [.4px, .8px]
+        - ref: matrix_index_top
+          shift: [-.3px, .8px]
+        - ref: matrix_index_top
+          shift: [.3px, .8px]
+        - ref: matrix_inner_top
+          shift: [.5px, .8px]
+        - ref: mirror_matrix_inner_top
+          shift: [.5px, .8px]
+        - ref: mirror_matrix_index_top
+          shift: [.3px, .8px]
+        - ref: mirror_matrix_index_top
+          shift: [-.3px, .8px]
+        - ref: mirror_matrix_middle_top
+          shift: [.4px, .8px]
+        - ref: mirror_matrix_middle_top
+          shift: [-.4px, .8px]
+        - ref: mirror_matrix_ring_top
+          shift: [.3px, .8px]
+        - ref: mirror_matrix_ring_top
+          shift: [-.3px, .8px]
+        - ref: mirror_matrix_pinky_top
+          shift: [-.9px, .6px]
+        - ref: mirror_matrix_pinky_bottom
+          shift: [-.9px, -.7px]
+        - ref: mirror_matrix_pinky_bottom
+          shift: [.1px, -.7px]
+        - ref: mirror_mods_first_upper
+          shift: [-px, -px]
+        - ref: mods_first_upper
+          shift: [-px, -px]
+        - ref: matrix_pinky_bottom
+          shift: [.1px, -.7px]
+        - ref: matrix_pinky_bottom
+          shift: [-.9px, -.7px]
+      fillet: 3
+  _combo:
+    - name: _board
+      operation: add
+    - name: _keys
+      operation: subtract
+pcbs:
+  gandalf:
+    template: kicad8
+    outlines:
+      main:
+        outline: _board
+    footprints:
+      choc_hotswap:
+        what: ceoloide/switch_choc_v1_v2
+        where: true
+        params:
+          reversible: false
+          hotswap: true
+          include_keycap: true
+          include_corner_marks: true
+          include_stabilizer_pad: false
+          choc_v1_support: true
+          choc_v2_support: true
+          from: "{{column_net}}"
+          to: "{{colrow}}"
+        adjust:
+          rotate: 180
+      diode:
+        what: ceoloide/diode_tht_sod123
+        where: true
+        params:
+          from: "{{colrow}}"
+          to: "{{row_net}}"
+        adjust:
+          shift: [-8,8]
+          rotate: -90
+          resist: true
+      mcu:
+        what: ceoloide/mcu_nice_nano
+        params:
+          side: 'F'
+          reverse_mount: true
+          P2: SDA
+          P3: SCL
+          P21: CPN
+          P20: CRN
+          P19: CMI
+          P18: LNU
+          P15: LTO
+          P14: LHO
+          P16: LBO
+          P10: LUP
+          P1:  CLO
+          P0:  CID
+          P4:  CIN
+          P5:  RNU
+          P6:  RTO
+          P7:  RHO
+          P8:  RBO
+          P9:  RUP
+        where:
+          ref.aggregate.parts: [matrix_inner_top, mirror_matrix_inner_top]
+          shift: [0,-3]
+          rotate: 0
+      display:
+        what: ceoloide/display_ssd1306
+        params:
+          side: "F"
+          SDA: SDA
+          SCL: SCL
+        where:
+          ref.aggregate.parts: [matrix_inner_home, mirror_matrix_inner_home]
+          shift: [0,-3]
+      reset:
+        what: ceoloide/reset_switch_smd_side
+        where:
+          ref: matrix_inner_top
+          shift: [0,.8px]
+          rotate: -14
+        params:
+          side: 'F'
+      power:
+        what: ceoloide/power_switch_smd_side
+        where:
+          ref: mirror_matrix_inner_top
+          shift: [0, .8px]
+          rotate: 0
+        params:
+          side: 'F'
+      battery:
+        what: ceoloide/battery_connector_jst_ph_2
+        where:
+          ref.aggregate.parts: [matrix_inner_top, mirror_matrix_inner_top]
+          shift: [0,.75px]
+          rotate: 0
+        params:
+          side: 'B'

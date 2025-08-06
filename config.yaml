@@ -9,6 +9,15 @@ units:
   ky: u
   px: kx + pad
   py: ky + pad
+  dpx: kx + 2*pad
+  dpy: ky + 2*pad
+  screwSize: 1.5
+  standoffSize: 2.5
+  bottomHeight: 5
+  # negative values so it goes down from the plate
+  mxPTP: -5
+  cv1PTP: -2.2
+  cv2PTP: -2.2
   mirror_gap: 70
 points:
   zones:
@@ -97,6 +106,12 @@ outlines:
     - what: rectangle
       where: true
       size: [kx-.5, ky-.5]
+  _switches:
+    - what: rectangle
+      # where: true # to include all keys
+      where:
+        - -/lower/
+      size: [14,14]
   _board:
     - what: polygon
       operation: stack
@@ -146,11 +161,122 @@ outlines:
         - ref: matrix_pinky_bottom
           shift: [-.9px, -.7px]
       fillet: 3
+  _XLboard:
+    - what: polygon
+      operation: stack
+      points:
+        - ref: matrix_pinky_number
+          shift: [-.9dpx, .6dpx]
+        - ref: matrix_ring_number
+          shift: [-.3dpx, .8dpx]
+        - ref: matrix_ring_number
+          shift: [.3dpx, .8dpx]
+        - ref: matrix_middle_number
+          shift: [-.4dpx, .8dpx]
+        - ref: matrix_middle_number
+          shift: [.4dpx, .8dpx]
+        - ref: matrix_index_number
+          shift: [-.3dpx, .8dpx]
+        - ref: matrix_index_number
+          shift: [.3dpx, .8dpx]
+        - ref: matrix_inner_number
+          shift: [.5dpx, .8dpx]
+        - ref: mirror_matrix_inner_number
+          shift: [.5dpx, .8dpx]
+        - ref: mirror_matrix_index_number
+          shift: [.3dpx, .8dpx]
+        - ref: mirror_matrix_index_number
+          shift: [-.3dpx, .8dpx]
+        - ref: mirror_matrix_middle_number
+          shift: [.4dpx, .8dpx]
+        - ref: mirror_matrix_middle_number
+          shift: [-.4dpx, .8dpx]
+        - ref: mirror_matrix_ring_number
+          shift: [.3dpx, .8dpx]
+        - ref: mirror_matrix_ring_number
+          shift: [-.3dpx, .8dpx]
+        - ref: mirror_matrix_pinky_number
+          shift: [-.9dpx, .6dpx]
+        - ref: mirror_matrix_pinky_bottom
+          shift: [-.9dpx, -.7dpx]
+        - ref: mirror_matrix_pinky_bottom
+          shift: [-.1dpx, -.7dpx]
+        - ref: mirror_mods_first_lower
+          shift: [-dpx, -dpx]
+        - ref: mods_first_lower
+          shift: [-dpx, -dpx]
+        - ref: matrix_pinky_bottom
+          shift: [-.1dpx, -.7dpx]
+        - ref: matrix_pinky_bottom
+          shift: [-.9dpx, -.7dpx]
+      fillet: 3
   _combo:
     - name: _board
       operation: add
     - name: _keys
       operation: subtract
+  mounting:
+    - what: circle
+      radius: screwSize
+      where:
+        ref: matrix_pinky_number
+        shift: [-14.5, 0]
+    - what: circle
+      radius: screwSize
+      where:
+        ref: mirror_matrix_pinky_number
+        shift: [-14.5, 0]
+    - what: circle
+      radius: screwSize
+      where:
+        ref: matrix_pinky_bottom
+        shift: [-14.5, 0]
+    - what: circle
+      radius: screwSize
+      where:
+        ref: mirror_matrix_pinky_bottom
+        shift: [-14.5, 0]
+    - what: circle
+      radius: screwSize
+      where:
+        ref: matrix_inner_bottom
+        shift: [20, -10]
+    - what: circle
+      radius: screwSize
+      where:
+        ref: mirror_matrix_inner_bottom
+        shift: [20, -10]
+  standoff:
+    - what: circle
+      radius: standoffSize
+      where:
+        ref: matrix_pinky_number
+        shift: [-14.5, 0]
+    - what: circle
+      radius: standoffSize
+      where:
+        ref: mirror_matrix_pinky_number
+        shift: [-14.5, 0]
+    - what: circle
+      radius: standoffSize
+      where:
+        ref: matrix_pinky_bottom
+        shift: [-14.5, 0]
+    - what: circle
+      radius: standoffSize
+      where:
+        ref: mirror_matrix_pinky_bottom
+        shift: [-14.5, 0]
+    - what: circle
+      radius: standoffSize
+      where:
+        ref: matrix_inner_bottom
+        shift: [20, -10]
+    - what: circle
+      radius: standoffSize
+      where:
+        ref: mirror_matrix_inner_bottom
+        shift: [20, -10]
 pcbs:
   gandalf:
     template: kicad8
@@ -159,7 +285,7 @@ pcbs:
         outline: _board
     footprints:
       choc_hotswap:
-        what: switch_choc_v1_v2
+        what: ceoloide/switch_choc_v1_v2
         where: true
         params:
           reversible: false
@@ -174,7 +300,7 @@ pcbs:
         adjust:
           rotate: 180
       diode:
-        what: diode_tht_sod123
+        what: ceoloide/diode_tht_sod123
         where: true
         params:
           from: "{{colrow}}"
@@ -184,7 +310,7 @@ pcbs:
           rotate: -90
           resist: true
       mcu:
-        what: mcu_nice_nano
+        what: ceoloide/mcu_nice_nano
         params:
           side: 'F'
           reverse_mount: true
@@ -211,7 +337,7 @@ pcbs:
           shift: [0,-3]
           rotate: 0
       display:
-        what: display_ssd1306
+        what: ceoloide/display_ssd1306
         params:
           side: "F"
           SDA: SDA
@@ -220,7 +346,7 @@ pcbs:
           ref.aggregate.parts: [matrix_inner_home, mirror_matrix_inner_home]
           shift: [0,-3]
       reset:
-        what: reset_switch_smd_side
+        what: ceoloide/reset_switch_smd_side
         where:
           ref: matrix_inner_number
           shift: [0,.8px]
@@ -228,7 +354,7 @@ pcbs:
         params:
           side: 'F'
       power:
-        what: power_switch_smd_side
+        what: ceoloide/power_switch_smd_side
         where:
           ref: mirror_matrix_inner_number
           shift: [0, .8px]
@@ -236,7 +362,7 @@ pcbs:
         params:
           side: 'F'
       battery:
-        what: battery_connector_jst_ph_2
+        what: ceoloide/battery_connector_jst_ph_2
         where:
           ref.aggregate.parts: [matrix_inner_top, mirror_matrix_inner_top]
           shift: [0,.75px]
@@ -244,32 +370,129 @@ pcbs:
         params:
           side: 'B'
       holeTL:
-        what: mounting_hole_plated
+        what: ceoloide/mounting_hole_plated
         where:
           ref: matrix_pinky_number
           shift: [-14.5,0]
       holeTR:
-        what: mounting_hole_plated
+        what: ceoloide/mounting_hole_plated
         where:
           ref: mirror_matrix_pinky_number
           shift: [-14.5,0]
       holeBL:
-        what: mounting_hole_plated
+        what: ceoloide/mounting_hole_plated
         where:
           ref.aggregate.parts: [matrix_pinky_bottom]
           shift: [-14.5,0]
       holeBR:
-        what: mounting_hole_plated
+        what: ceoloide/mounting_hole_plated
         where:
           ref.aggregate.parts: [mirror_matrix_pinky_bottom]
           shift: [14.5,0]
       holeCL1:
-        what: mounting_hole_plated
+        what: ceoloide/mounting_hole_plated
         where:
           ref: matrix_inner_bottom
           shift: [20,-10]
       holeCR1:
-        what: mounting_hole_plated
+        what: ceoloide/mounting_hole_plated
         where:
           ref: mirror_matrix_inner_bottom
           shift: [20,-10]
+cases:
+  bottom:
+    - name: _board
+      extrude: 1
+  xlBottom:
+    - name: _XLboard
+      extrude: 1
+  _outerBottomWall:
+    - name: _XLboard
+      extrude: bottomHeight
+  _innerBottomWall:
+    - name: _board
+      extrude: bottomHeight
+  bottomWall:
+    - what: case
+      name: _outerBottomWall
+      operation: add
+    - what: case
+      name: _innerBottomWall
+      operation: subtract
+  _outerMiddleWall:
+    - name: _XLboard
+      extrude: cv2PTP
+  _innerMiddleWall:
+    - name: _board
+      extrude: cv2PTP
+  middleWall:
+    - what: case
+      name: _outerMiddleWall
+      operation: add
+    - what: case
+      name: _innerMiddleWall
+      operation: subtract
+  _outerTopWall:
+    - name: _XLboard
+      extrude: 3
+  _innerTopWall:
+    - name: _board
+      extrude: 3
+  topWall:
+    - what: case
+      name: _outerTopWall
+      operation: add
+    - what: case
+      name: _innerTopWall
+      operation: subtract
+  _holes:
+    - name: mounting
+      extrude: bottomHeight
+  _standoffs:
+    - name: standoff
+      extrude: bottomHeight
+  _midHoles:
+    - name: mounting
+      extrude: cv2PTP
+  _midStandoffs:
+    - name: standoff
+      extrude: cv2PTP
+  _switches:
+    - name: _switches
+      extrude: 1
+  _topPlate:
+    - what: case
+      name: xlBottom
+      operation: add
+    - what: case
+      name: _switches
+      operation: subtract
+    - what: case
+      name: middleWall
+      operation: add
+  topCase:
+    - what: case
+      name: _midStandoffs
+      operation: add
+    - what: case
+      name: _midHoles
+      operation: subtract
+    - what: case
+      name: _topPlate
+      operation: add
+    - what: case
+      name: topWall
+      operation: add
+  bottomCase:
+    - what: case
+      name: _standoffs
+      operation: add
+    - what: case
+      name: _holes
+      operation: subtract
+    - what: case
+      name: xlBottom
+      operation: add
+    - what: case
+      name: bottomWall
+      operation: add

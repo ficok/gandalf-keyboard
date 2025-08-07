@@ -15,9 +15,9 @@ units:
   standoffSize: 2.5
   bottomHeight: 5
   # negative values so it goes down from the plate
-  mxPTP: -5
-  cv1PTP: -2.2
-  cv2PTP: -2.2
+  mxPTP: 5
+  cv1PTP: 2.2
+  cv2PTP: 2.2
   mirror_gap: 70
 points:
   zones:
@@ -155,6 +155,55 @@ outlines:
         - ref: mirror_mods_first_lower
           shift: [-px, -px]
         - ref: mods_first_lower
+          shift: [-px, -px]
+        - ref: matrix_pinky_bottom
+          shift: [.1px, -.7px]
+        - ref: matrix_pinky_bottom
+          shift: [-.9px, -.7px]
+      fillet: 3
+  _boardNoLower:
+    - what: polygon
+      operation: stack
+      points:
+        - ref: matrix_pinky_number
+          shift: [-.9px, .6px]
+        - ref: matrix_ring_number
+          shift: [-.3px, .8px]
+        - ref: matrix_ring_number
+          shift: [.3px, .8px]
+        - ref: matrix_middle_number
+          shift: [-.4px, .8px]
+        - ref: matrix_middle_number
+          shift: [.4px, .8px]
+        - ref: matrix_index_number
+          shift: [-.3px, .8px]
+        - ref: matrix_index_number
+          shift: [.3px, .8px]
+        - ref: matrix_inner_number
+          shift: [.5px, .8px]
+        - ref: mirror_matrix_inner_number
+          shift: [.5px, .8px]
+        - ref: mirror_matrix_index_number
+          shift: [.3px, .8px]
+        - ref: mirror_matrix_index_number
+          shift: [-.3px, .8px]
+        - ref: mirror_matrix_middle_number
+          shift: [.4px, .8px]
+        - ref: mirror_matrix_middle_number
+          shift: [-.4px, .8px]
+        - ref: mirror_matrix_ring_number
+          shift: [.3px, .8px]
+        - ref: mirror_matrix_ring_number
+          shift: [-.3px, .8px]
+        - ref: mirror_matrix_pinky_number
+          shift: [-.9px, .6px]
+        - ref: mirror_matrix_pinky_bottom
+          shift: [-.9px, -.7px]
+        - ref: mirror_matrix_pinky_bottom
+          shift: [.1px, -.7px]
+        - ref: mirror_mods_first_upper
+          shift: [-px, -px]
+        - ref: mods_first_upper
           shift: [-px, -px]
         - ref: matrix_pinky_bottom
           shift: [.1px, -.7px]
@@ -403,15 +452,19 @@ cases:
   bottom:
     - name: _board
       extrude: 1
+  bottomNoLower:
+    - name: _boardNoLower
+      extrude: 1
   xlBottom:
     - name: _XLboard
       extrude: 1
   _outerBottomWall:
     - name: _XLboard
-      extrude: bottomHeight
+      extrude: bottomHeight + cv2PTP + 3
   _innerBottomWall:
     - name: _board
-      extrude: bottomHeight
+    # - name: _boardNoLower
+      extrude: bottomHeight + cv2PTP + 3
   bottomWall:
     - what: case
       name: _outerBottomWall
@@ -419,70 +472,32 @@ cases:
     - what: case
       name: _innerBottomWall
       operation: subtract
-  _outerMiddleWall:
-    - name: _XLboard
-      extrude: cv2PTP
-  _innerMiddleWall:
-    - name: _board
-      extrude: cv2PTP
-  middleWall:
-    - what: case
-      name: _outerMiddleWall
-      operation: add
-    - what: case
-      name: _innerMiddleWall
-      operation: subtract
-  _outerTopWall:
-    - name: _XLboard
-      extrude: 3
-  _innerTopWall:
-    - name: _board
-      extrude: 3
-  topWall:
-    - what: case
-      name: _outerTopWall
-      operation: add
-    - what: case
-      name: _innerTopWall
-      operation: subtract
   _holes:
     - name: mounting
       extrude: bottomHeight
   _standoffs:
     - name: standoff
       extrude: bottomHeight
-  _midHoles:
-    - name: mounting
-      extrude: cv2PTP
-  _midStandoffs:
-    - name: standoff
-      extrude: cv2PTP
   _switches:
     - name: _switches
       extrude: 1
-  _topPlate:
+  topPlate:
     - what: case
-      name: xlBottom
+      name: bottom
       operation: add
     - what: case
       name: _switches
       operation: subtract
     - what: case
-      name: middleWall
-      operation: add
-  topCase:
-    - what: case
-      name: _midStandoffs
-      operation: add
-    - what: case
-      name: _midHoles
+      name: _holes
       operation: subtract
+  bottomPlate:
     - what: case
-      name: _topPlate
+      name: xlBottom
       operation: add
     - what: case
-      name: topWall
-      operation: add
+      name: _holes
+      operation: subtract
   bottomCase:
     - what: case
       name: _standoffs
@@ -491,7 +506,7 @@ cases:
       name: _holes
       operation: subtract
     - what: case
-      name: xlBottom
+      name: bottomPlate
       operation: add
     - what: case
       name: bottomWall

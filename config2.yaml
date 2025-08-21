@@ -23,9 +23,11 @@ points:
         padding: ky
         spread: kx
       columns:
+        outer:
         pinky:
           key:
             column_net: CPN
+            stagger: 5
         ring:
           key:
             column_net: CRN
@@ -52,13 +54,14 @@ points:
         top:
           row_net: LTO
           mirror.row_net: RTO
+        number:
     mods:
       mirror: &mirror
         ref: matrix_inner_bottom
         distance: mirror_gap
       anchor:
         ref: matrix_ring_bottom
-        shift: [-.3kx, -2.3ky]
+        shift: [-.2kx, -2.3ky]
       rotate: -angle - 7
       key:
         padding: ky

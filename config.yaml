@@ -259,6 +259,104 @@ outlines:
         - ref: matrix_pinky_bottom
           shift: [-.9dpx, -.7dpx]
       fillet: 3
+  _XSboard:
+    - what: polygon
+      operation: stack
+      points:
+        - ref: matrix_pinky_number
+          shift: [-.5px, .5px]
+        - ref: matrix_ring_number
+          shift: [-.3px, .5px]
+        - ref: matrix_ring_number
+          shift: [.3px, .5px]
+        - ref: matrix_middle_number
+          shift: [-.4px, .5px]
+        - ref: matrix_middle_number
+          shift: [.4px, .5px]
+        - ref: matrix_index_number
+          shift: [-.3px, .5px]
+        - ref: matrix_index_number
+          shift: [.3px, .5px]
+        - ref: matrix_inner_number
+          shift: [.5px, .5px]
+        - ref: mirror_matrix_inner_number
+          shift: [.5px, .5px]
+        - ref: mirror_matrix_index_number
+          shift: [.3px, .5px]
+        - ref: mirror_matrix_index_number
+          shift: [-.3px, .5px]
+        - ref: mirror_matrix_middle_number
+          shift: [.4px, .5px]
+        - ref: mirror_matrix_middle_number
+          shift: [-.4px, .5px]
+        - ref: mirror_matrix_ring_number
+          shift: [.3px, .5px]
+        - ref: mirror_matrix_ring_number
+          shift: [-.3px, .5px]
+        - ref: mirror_matrix_pinky_number
+          shift: [-.5px, .5px]
+        - ref: mirror_matrix_pinky_bottom
+          shift: [-.5px, -.5px]
+        - ref: mirror_matrix_pinky_bottom
+          shift: [.4px, -.5px]
+        - ref: mirror_mods_first_lower
+          shift: [-.7px, -.7px]
+        - ref: mods_first_lower
+          shift: [-.7px, -.7px]
+        - ref: matrix_pinky_bottom
+          shift: [.4px, -.5px]
+        - ref: matrix_pinky_bottom
+          shift: [-.5px, -.5px]
+      fillet: 3
+  _XSboardNoLower:
+    - what: polygon
+      operation: stack
+      points:
+        - ref: matrix_pinky_number
+          shift: [-.5px, .5px]
+        - ref: matrix_ring_number
+          shift: [-.3px, .5px]
+        - ref: matrix_ring_number
+          shift: [.3px, .5px]
+        - ref: matrix_middle_number
+          shift: [-.4px, .5px]
+        - ref: matrix_middle_number
+          shift: [.4px, .5px]
+        - ref: matrix_index_number
+          shift: [-.3px, .5px]
+        - ref: matrix_index_number
+          shift: [.3px, .5px]
+        - ref: matrix_inner_number
+          shift: [.5px, .5px]
+        - ref: mirror_matrix_inner_number
+          shift: [.5px, .5px]
+        - ref: mirror_matrix_index_number
+          shift: [.3px, .5px]
+        - ref: mirror_matrix_index_number
+          shift: [-.3px, .5px]
+        - ref: mirror_matrix_middle_number
+          shift: [.4px, .5px]
+        - ref: mirror_matrix_middle_number
+          shift: [-.4px, .5px]
+        - ref: mirror_matrix_ring_number
+          shift: [.3px, .5px]
+        - ref: mirror_matrix_ring_number
+          shift: [-.3px, .5px]
+        - ref: mirror_matrix_pinky_number
+          shift: [-.5px, .5px]
+        - ref: mirror_matrix_pinky_bottom
+          shift: [-.5px, -.5px]
+        - ref: mirror_matrix_pinky_bottom
+          shift: [.4px, -.5px]
+        - ref: mirror_mods_first_upper
+          shift: [-.7px, -.7px]
+        - ref: mods_first_upper
+          shift: [-.7px, -.7px]
+        - ref: matrix_pinky_bottom
+          shift: [.4px, -.5px]
+        - ref: matrix_pinky_bottom
+          shift: [-.5px, -.5px]
+      fillet: 3
   _combo:
     - name: _board
       operation: add
@@ -326,6 +424,32 @@ outlines:
       where:
         ref: mirror_matrix_inner_bottom
         shift: [20, -10]
+  top-plate:
+    - name: _board
+      operation: add
+    - name: _switches
+      operation: subtract
+    - name: mounting
+      operation: subtract
+  bot-plate:
+    - name: _board
+      operation: add
+    - name: mounting
+      operation: subtract
+  top-wall:
+    - name: _board
+      operation: add
+    - name: _XSboardNoLower
+      operation: subtract
+    - name: mounting
+      operation: subtract
+  bot-wall:
+    - name: _board
+      operation: add
+    - name: _XSboard
+      operation: subtract
+    - name: mounting
+      operation: subtract
 pcbs:
   gandalf:
     template: kicad8

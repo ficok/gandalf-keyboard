@@ -1,0 +1,170 @@
+meta:
+  engine: 4.1.0
+units:
+  $default_width: u
+  $default_height: u
+  angle: -9
+  pad: 2
+  kx: u
+  ky: u
+  px: kx + pad
+  py: ky + pad
+  dpx: kx + 2*pad
+  dpy: ky + 2*pad
+  screwSize: 1.5
+  standoffSize: 2.5
+  bottomHeight: 5
+  # negative values so it goes down from the plate
+  mxPTP: 5
+  cv1PTP: 2.2
+  cv2PTP: 2.2
+  mirror_gap: 70
+points:
+  zones:
+    matrix:
+      anchor:
+        shift: [100,-100]
+      rotate: angle
+      mirror: &mirror
+        ref: matrix_inner_bottom
+        distance: mirror_gap
+      key:
+        padding: ky
+        spread: kx
+      columns:
+        pinky:
+          key:
+            column_net: CPN
+        ring:
+          key:
+            column_net: CRN
+            stagger: 5
+        middle:
+          key:
+            column_net: CMI
+            stagger: 3
+        index:
+          key:
+            column_net: CID
+            stagger: -3
+        inner:
+          key:
+            column_net: CIN
+            stagger: -3
+      rows:
+        bottom:
+          row_net: LBO
+          mirror.row_net: RBO
+        home:
+          row_net: LHO
+          mirror.row_net: RHO
+        top:
+          row_net: LTO
+          mirror.row_net: RTO
+        number:
+          row_net: LNU
+          mirror.row_net: RNU
+    mods:
+      mirror: &mirror
+        ref: matrix_inner_bottom
+        distance: mirror_gap
+      anchor:
+        ref: matrix_ring_bottom
+        shift: [-.3kx, -3.2ky]
+      rotate: -angle - 3
+      key:
+        padding: ky
+        spread: 1kx
+      columns:
+        first:
+          rows.upper.column_net: CRN
+          rows.lower.column_net: CLO
+          rows.lower.row_net: LTO
+          rows.lower.mirror.row_net: RTO
+        second:
+          rows.upper.column_net: CMI
+          rows.lower.column_net: CLO
+          rows.lower.row_net: LHO
+          rows.lower.mirror.row_net: RHO
+        third:
+          rows.upper.column_net: CID
+          rows.lower.column_net: CLO
+          rows.lower.row_net: LBO
+          rows.lower.mirror.row_net: RBO
+        fourth:
+          rows.upper.column_net: CIN
+          rows.lower.column_net: CLO
+          rows.lower.row_net: LUP
+          rows.lower.mirror.row_net: RUP
+      rows:
+        lower:
+        upper:
+          row_net: LUP
+          mirror.row_net: RUP
+outlines:
+  keys:
+    - what: rectangle
+      where: true
+      size: [kx-.5, ky-.5]
+  switches:
+    - what: rectangle
+      # where: true # to include all keys
+      where: true
+      size: [14,14]
+  board:
+    - what: polygon
+      operation: stack
+      points:
+        - ref: matrix_pinky_number
+          shift: [-.5px, .9px]
+        # - ref: matrix_ring_number
+        #   shift: [-.3px, .5px]
+        # - ref: matrix_ring_number
+        #   shift: [.3px, .5px]
+        # - ref: matrix_middle_number
+        #   shift: [-.4px, .5px]
+        # - ref: matrix_middle_number
+        #   shift: [.4px, .5px]
+        # - ref: matrix_index_number
+        #   shift: [-.3px, .5px]
+        # - ref: matrix_index_number
+        #   shift: [.3px, .5px]
+        - ref: matrix_inner_number
+          shift: [.5px, .8px]
+        - ref: mirror_matrix_inner_number
+          shift: [.5px, .8px]
+        # - ref: mirror_matrix_index_number
+        #   shift: [.3px, .8px]
+        # - ref: mirror_matrix_index_number
+        #   shift: [-.3px, .8px]
+        # - ref: mirror_matrix_middle_number
+        #   shift: [.4px, .8px]
+        # - ref: mirror_matrix_middle_number
+        #   shift: [-.4px, .8px]
+        # - ref: mirror_matrix_ring_number
+        #   shift: [.3px, .8px]
+        # - ref: mirror_matrix_ring_number
+        #   shift: [-.3px, .8px]
+        - ref: mirror_matrix_pinky_number
+          shift: [-.5px, .9px]
+        - ref: mirror_matrix_pinky_bottom
+          shift: [-.5px, -.5px]
+        - ref: mirror_matrix_pinky_bottom
+          shift: [.7px, -.5px]
+        - ref: mirror_mods_first_lower
+          shift: [-.5px, -.5px]
+        - ref: mirror_mods_fourth_lower
+          shift: [.5px, -.5px]
+        - ref: mods_fourth_lower
+          shift: [.5px, -.5px]
+        - ref: mods_first_lower
+          shift: [-.5px, -.5px]
+        - ref: matrix_pinky_bottom
+          shift: [.7px, -.5px]
+        - ref: matrix_pinky_bottom
+          shift: [-.5px, -.5px]
+  combo:
+    - name: board
+      operation: add
+    - name: switches
+      operation: subtract
